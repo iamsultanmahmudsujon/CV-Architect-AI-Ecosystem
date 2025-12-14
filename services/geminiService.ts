@@ -126,6 +126,37 @@ const headshotSchema: Schema = {
   required: ["score", "professionalism", "lighting", "background", "attire", "expression", "tips"]
 };
 
+const getCleanApiKey = () => {
+  let key: string | undefined;
+
+  // 1. Try process.env (Standard Node/CRA/Next.js)
+  // We check typeof process to avoid crashing in environments where process is not defined at all
+  if (typeof process !== 'undefined' && process.env) {
+    key = process.env.API_KEY || 
+          process.env.REACT_APP_API_KEY || 
+          process.env.VITE_API_KEY || 
+          process.env.NEXT_PUBLIC_API_KEY;
+  }
+
+  // 2. Try import.meta.env (Vite)
+  // Using try-catch because accessing import.meta can fail in some bundlers or legacy browsers
+  if (!key) {
+    try {
+      // @ts-ignore: import.meta is a valid property in ES modules
+      if (typeof import.meta !== 'undefined' && import.meta.env) {
+        // @ts-ignore
+        key = import.meta.env.VITE_API_KEY || import.meta.env.API_KEY;
+      }
+    } catch (e) {
+      // Ignore errors if import.meta is not available
+    }
+  }
+
+  if (!key) return null;
+  // Remove quotes and whitespace that might be accidentally added
+  return key.replace(/['"]/g, '').trim();
+};
+
 export const analyzeCV = async (
   cvText: string,
   jobDescription: string,
@@ -133,9 +164,9 @@ export const analyzeCV = async (
   fileData?: string,
   fileMimeType?: string
 ): Promise<AnalysisResult> => {
-  const apiKey = process.env.API_KEY;
+  const apiKey = getCleanApiKey();
   if (!apiKey) {
-    throw new Error("API Key is missing. Please set API_KEY in your environment variables.");
+    throw new Error("API Key is missing. Please set VITE_API_KEY in your environment variables and REDEPLOY.");
   }
 
   const ai = new GoogleGenAI({ apiKey });
@@ -217,7 +248,7 @@ export const analyzeCV = async (
 };
 
 export const analyzeHeadshot = async (base64Image: string, mimeType: string): Promise<HeadshotAnalysis> => {
-  const apiKey = process.env.API_KEY;
+  const apiKey = getCleanApiKey();
   if (!apiKey) throw new Error("API Key is missing. Please set API_KEY in your environment variables.");
 
   const ai = new GoogleGenAI({ apiKey });

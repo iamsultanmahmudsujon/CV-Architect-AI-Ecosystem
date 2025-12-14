@@ -76,7 +76,7 @@ function App() {
       let msg = err.message || "An unexpected error occurred.";
       
       if (msg.includes("API Key")) {
-        msg = "API Key is missing. Please check your Environment Variables in Vercel.";
+        msg = "Vercel Environment Error: Please rename your variable to 'VITE_API_KEY' in Vercel Settings and then REDEPLOY the app.";
       } else if (msg.includes("400")) {
         msg = "The file or content was rejected by the AI. It might be too large or corrupted. Try a smaller PDF.";
       } else if (msg.includes("429")) {
