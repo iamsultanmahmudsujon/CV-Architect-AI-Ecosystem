@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import InputForm from './components/InputForm';
@@ -69,9 +68,24 @@ function App() {
       setResult(analysis);
       saveToHistory(analysis);
       setAppState(AppState.RESULTS);
-    } catch (err) {
+    } catch (err: any) {
+      console.error("Analysis Error:", err);
       setAppState(AppState.ERROR);
-      setError("Failed to analyze CV. Please ensure your API Key is valid and try again.");
+      
+      // Determine user-friendly error message
+      let msg = err.message || "An unexpected error occurred.";
+      
+      if (msg.includes("API Key")) {
+        msg = "API Key is missing. Please check your Environment Variables in Vercel.";
+      } else if (msg.includes("400")) {
+        msg = "The file or content was rejected by the AI. It might be too large or corrupted. Try a smaller PDF.";
+      } else if (msg.includes("429")) {
+        msg = "Traffic limit exceeded (Quota). Please wait a minute and try again.";
+      } else if (msg.includes("500") || msg.includes("503")) {
+        msg = "AI Service is temporarily unavailable. Please try again later.";
+      }
+      
+      setError(msg);
     }
   };
 
@@ -131,7 +145,7 @@ function App() {
             <div className="bg-red-50 p-6 rounded-xl border border-red-200 flex flex-col items-center">
               <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
               <h3 className="text-lg font-bold text-red-800 mb-2">Analysis Failed</h3>
-              <p className="text-red-600 mb-6">{error}</p>
+              <p className="text-red-600 mb-6 font-medium">{error}</p>
               <button 
                 onClick={resetApp}
                 className="px-6 py-2 bg-white border border-red-300 text-red-700 font-medium rounded-lg hover:bg-red-50 transition-colors"

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { UserInput } from '../types';
 import { Upload, Search, Briefcase, FileText, Globe, Lock, FileType, X } from 'lucide-react';
@@ -89,11 +88,11 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
     setFileError(null);
     
     if (selectedFile) {
-      // 50 MB Limit
-      const maxSize = 50 * 1024 * 1024;
+      // 20 MB Limit (Safer for API inline usage)
+      const maxSize = 20 * 1024 * 1024;
 
       if (selectedFile.size > maxSize) {
-        setFileError("File size exceeds 50MB limit.");
+        setFileError("File size exceeds 20MB limit. Please upload a compressed or smaller file.");
         return;
       }
 
@@ -154,7 +153,7 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
                     <Upload className="w-6 h-6" />
                   </div>
                   <p className="text-sm font-medium text-slate-700 cursor-pointer">Click to upload Resume</p>
-                  <p className="text-xs text-slate-500 mt-1">PDF, DOCX, JPG, PNG supported (Max 50MB)</p>
+                  <p className="text-xs text-slate-500 mt-1">PDF, DOCX, JPG, PNG supported (Max 20MB)</p>
                 </div>
               ) : (
                 <div className="flex items-center justify-between">

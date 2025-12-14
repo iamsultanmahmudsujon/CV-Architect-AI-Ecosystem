@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { AnalysisResult, HeadshotAnalysis } from "../types";
 
@@ -136,7 +135,7 @@ export const analyzeCV = async (
 ): Promise<AnalysisResult> => {
   const apiKey = process.env.API_KEY;
   if (!apiKey) {
-    throw new Error("API Key is missing");
+    throw new Error("API Key is missing. Please set API_KEY in your environment variables.");
   }
 
   const ai = new GoogleGenAI({ apiKey });
@@ -219,7 +218,7 @@ export const analyzeCV = async (
 
 export const analyzeHeadshot = async (base64Image: string, mimeType: string): Promise<HeadshotAnalysis> => {
   const apiKey = process.env.API_KEY;
-  if (!apiKey) throw new Error("API Key is missing");
+  if (!apiKey) throw new Error("API Key is missing. Please set API_KEY in your environment variables.");
 
   const ai = new GoogleGenAI({ apiKey });
   
