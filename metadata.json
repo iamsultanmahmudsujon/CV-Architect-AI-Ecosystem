@@ -1,0 +1,5 @@
+{
+  "name": "CV-Architect AI",
+  "description": "An HR-grade CV analysis and optimization tool utilizing Gemini 2.5 to provide ATS scoring, gap analysis, and tailored content improvements for the global and Asian job markets.",
+  "requestFramePermissions": []
+}
